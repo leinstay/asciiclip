@@ -1,21 +1,21 @@
-from setuptools import setup, find_packages
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
-with open("requirements.txt", "r", encoding="utf-8") as fh:
-    requirements = fh.read()
-setup(
+import setuptools
+
+setuptools.setup(
     name='asciiclip',
-    version='1.0.0',
+    version='1.0.3',
     author='leinstay',
     author_email='leinstay@gmail.com',
-    license='MIT License',
-    description='TODO',
-    long_description=long_description,
+    description='',
+    long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
     url='https://github.com/leinstay/asciiclip',
-    py_modules=['app', 'src'],
-    packages=find_packages(),
-    install_requires=[requirements],
+    py_modules=['app'],
+    install_requires=[
+        "click",
+        "moviepy",
+        "Pillow",
+        "pytube",
+    ],
     python_requires='>=3.7',
     classifiers=[
         "Programming Language :: Python :: 3.11",

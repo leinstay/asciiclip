@@ -4,6 +4,7 @@ import tempfile
 from tqdm import tqdm
 from typing import Tuple
 from pytube import YouTube
+from numpy import ndarray
 from multiprocessing import Pool
 from PIL import Image, ImageDraw, ImageFont
 from moviepy.editor import ImageSequenceClip, VideoFileClip, AudioFileClip
@@ -86,7 +87,7 @@ class ASCIIClip:
         return (x, y)
 
     @staticmethod
-    def _frame_to_image(data: any, width: int, height: int, fps: int, duration: int, destination: str, frame: int, chunk: Tuple[int, int], chars: Tuple, compression: int, font: str, fontsize: str, fontcolor: str, maximumluminosity: int) -> None:
+    def _frame_to_image(data: ndarray, width: int, height: int, fps: int, duration: int, destination: str, frame: int, chunk: Tuple[int, int], chars: Tuple, compression: int, font: str, fontsize: str, fontcolor: str, maximumluminosity: int) -> None:
         im = Image.new(mode="RGB", size=(
             int((width*fontsize)/chunk[0]), int((height*fontsize)/chunk[1])))
         di = ImageDraw.Draw(im)
