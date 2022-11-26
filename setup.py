@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='asciiclip',
-    version='1.0.6',
+    version='1.0.7',
     author='leinstay',
     author_email='leinstay@gmail.com',
     description='',
