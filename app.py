@@ -8,12 +8,12 @@ def cli():
 
 
 @cli.command()
-def mvgen(url, destination):
+def mvgen():
     ASCIIClip().generate_video(None, None)
 
 
 @cli.command()
-def imgen(url, destination):
+def imgen():
     ASCIIClip().generate_image(None, None)
 
 
