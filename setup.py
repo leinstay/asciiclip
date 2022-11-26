@@ -9,7 +9,7 @@ setuptools.setup(
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
     url='https://github.com/leinstay/asciiclip',
-    py_modules=['app', 'lib'],
+    py_modules=['app', 'asciiclip'],
     install_requires=[
         "click",
         "moviepy",
