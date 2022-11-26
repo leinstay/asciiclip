@@ -216,4 +216,4 @@ class ASCIIClip:
         return output
 
     def generate_image(self, link: str, destination: str):
-        pass
+        print('...')
