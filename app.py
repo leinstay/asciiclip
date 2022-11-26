@@ -1,5 +1,5 @@
 import click
-from app.asciiclip import ASCIIClip
+from lib.asciiclip import ASCIIClip
 
 
 @click.group()

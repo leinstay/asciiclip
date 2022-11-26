@@ -2,14 +2,14 @@ import setuptools
 
 setuptools.setup(
     name='asciiclip',
-    version='1.0.5',
+    version='1.0.6',
     author='leinstay',
     author_email='leinstay@gmail.com',
     description='',
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
     url='https://github.com/leinstay/asciiclip',
-    py_modules=['app'],
+    py_modules=['app', 'lib'],
     install_requires=[
         "click",
         "moviepy",
