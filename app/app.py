@@ -7,18 +7,14 @@ def cli():
     pass
 
 
-@cli.command(name='mvgen')
-@click.option('-u', '--url', type=str)
-@click.option('-d', '--destination', type=click.Path(exists=True))
+@cli.command()
 def mvgen(url, destination):
-    ASCIIClip().generate_video(url, destination)
+    ASCIIClip().generate_video(None, None)
 
 
-@cli.command(name='imgen')
-@click.option('-u', '--url', type=str)
-@click.option('-d', '--destination', type=click.Path(exists=True))
+@cli.command()
 def imgen(url, destination):
-    ASCIIClip().generate_image(url, destination)
+    ASCIIClip().generate_image(None, None)
 
 
 if __name__ == '__main__':
