@@ -34,7 +34,7 @@ class ASCIIClip:
 
         if chars == "5s":
             self.chars = (".", ";", "*", "u", "o")
-        else if chars == "9s":
+        elif chars == "9s":
             self.chars = (".", "`", ":", ";", "+", "*", "u", "o", "@")
         else:
             self.chars = chars
