@@ -32,11 +32,7 @@ Installing from [PyPI] is the recommended way of installation, which gives you t
 
 ## Usage
 
-asciiclip is composed of multiple commands, similar to `git`, `apt-get` or
-`brew`.
-
-When you run `asciiclip` with no arguments help message is displayed, listing
-all available commands with their options.
+When you run `asciiclip` with no arguments help message is displayed, listing all options.
 
 Usage: asciiclip [OPTIONS]
 
