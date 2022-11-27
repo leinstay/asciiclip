@@ -1,23 +1,23 @@
 import os
 import tempfile
 
-from tqdm import tqdm
-from typing import Tuple
-from pytube import YouTube
-from numpy import ndarray
 from multiprocessing import Pool
+from typing import Tuple
+from moviepy.editor import AudioFileClip, ImageSequenceClip, VideoFileClip
+from numpy import ndarray
 from PIL import Image, ImageDraw, ImageFont
-from moviepy.editor import ImageSequenceClip, VideoFileClip, AudioFileClip
+from pytube import YouTube
+from tqdm import tqdm
 from moviepy.video.fx.blackwhite import blackwhite
 
 
 class ASCIIClip:
     defaultfont = os.path.join(os.path.dirname(__file__), "moby.ttf")
+    # (".", "`", ":", ";", "+", "*", "u", "o", "@")
+    # (".", ";", "*", "u", "o")
 
-    def __init__(self, chunk: Tuple[int, int], chars: Tuple, gsv: list[int, int, int], compression: int, forceaspectratio: bool, sourcequality: str, preset: str, fontsize: int, fontcolor: Tuple[int, int, int], font: str = defaultfont) -> None:
-        # (".", "`", ":", ";", "+", "*", "u", "o", "@")
-        # (".", ";", "*", "u", "o")
-
+    def __init__(self, chunk: Tuple[int, int], chars: Tuple, gsv: list[int, int, int], compression: int, forceaspectratio: bool,
+                 sourcequality: str, preset: str, fontsize: int, fontcolor: Tuple[int, int, int], font: str = defaultfont) -> None:
         if compression not in range(0, 9):
             raise ValueError(
                 "ERR: Compression level must be greater than 0 (no compression) and less than 9 (max compression)")
@@ -76,8 +76,10 @@ class ASCIIClip:
         return (x, y)
 
     @staticmethod
-    def _frame_to_image(data: ndarray, width: int, height: int, fps: int, duration: int, destination: str, frame: int, chunk: Tuple[int, int], chars: Tuple, compression: int, font: str, fontsize: str, fontcolor: str, maximumluminosity: int) -> None:
-        im = Image.new(mode="RGB", size=(int((width*fontsize)/chunk[0]), int((height*fontsize)/chunk[1])))
+    def _frame_to_image(data: ndarray, width: int, height: int, fps: int, duration: int, destination: str, frame: int, chunk: Tuple[int, int],
+                        chars: Tuple, compression: int, font: str, fontsize: str, fontcolor: str, maximumluminosity: int) -> None:
+        im = Image.new(mode="RGB", size=(
+            int((width*fontsize)/chunk[0]), int((height*fontsize)/chunk[1])))
         di = ImageDraw.Draw(im)
 
         for y in range(0, int(height/chunk[1])):
@@ -93,7 +95,9 @@ class ASCIIClip:
             di.text((0, y*fontsize), line, fill=fontcolor,
                     font=ImageFont.truetype(font, fontsize))
 
-        nm = destination + "/frame_" + str(frame).zfill(len(str(fps*duration))) + ".png"
+        nm = destination + "/frame_" + \
+            str(frame).zfill(len(str(fps*duration))) + ".png"
+
         im.save(nm, "PNG", optimize=False, compress_level=compression)
         im.close()
 
@@ -124,9 +128,8 @@ class ASCIIClip:
         if progress:
             bar = tqdm(total=int(source.fps*source.duration))
 
-        pool = Pool(processes=threads)
-
         frame = 1
+        pool = Pool(processes=threads)
         for data in source.iter_frames(logger=None):
             pool.apply_async(self._frame_to_image, args=(data, source.w, source.h, source.fps, source.duration, temp, frame, self.chunk,
                              self.chars, self.compression, self.font, self.fontsize, self.fontcolor, self._maximumluminosity), callback=update)
@@ -166,7 +169,8 @@ class ASCIIClip:
         try:
             self._print(f"ASCIIClip - Downloading video from YouTube", verbose)
             source = blackwhite(self._cut(VideoFileClip(YouTube(link).streams.filter(
-                res="360p" if self.preset is not None else self.sourcequality).first().download(output_path=temp, filename="yt.mp4")), segment), RGB=self.gsv)
+                res="360p" if self.preset is not None else self.sourcequality
+            ).first().download(output_path=temp, filename="yt.mp4")), segment), RGB=self.gsv)
 
             self._print(f"ASCIIClip - Downloading audio from YouTube", verbose)
             audio = self._cut(AudioFileClip(YouTube(link).streams.filter(
@@ -183,7 +187,8 @@ class ASCIIClip:
                 f"ERR: Source height must be divisible by chunk height ({source.h}px)")
 
         try:
-            self._print(f"ASCIIClip - Generating an ASCII copy of each frame", verbose)
+            self._print(
+                f"ASCIIClip - Generating an ASCII copy of each frame", verbose)
             self._apply_preset(source.w, source.h)
             self._video_to_sequence(source, temp, threads, progress)
 

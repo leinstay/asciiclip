@@ -26,9 +26,13 @@ def cli():
 @click.option('-fc', '--fontcolor', type=int, nargs=3, help='TODO', required=False, default=(255, 255, 255), show_default=True)
 @click.option('--keepaspectratio', is_flag=True, help='TODO', required=False)
 @click.option('--quiet', is_flag=True, help='TODO', required=False)
-def mvgen(chunk, chars, gsv, compression, sourcequality, preset, fontsize, fontcolor, font, url, destination, filename, start, end, threads, quiet, keepaspectratio):
-    _ = ASCIIClip(chunk, tuple(list(chars)), list(gsv), compression, not keepaspectratio, sourcequality, preset, fontsize, fontcolor, font)
-    _.generate_video(url, destination, filename, (start, end), threads, not quiet, not quiet)
+def mvgen(chunk, chars, gsv, compression, sourcequality, preset, fontsize, fontcolor, font, url,
+          destination, filename, start, end, threads, quiet, keepaspectratio):
+
+    _ = ASCIIClip(chunk, tuple(list(chars)), list(gsv), compression, not keepaspectratio,
+                  sourcequality, preset, fontsize, fontcolor, font)
+    _.generate_video(url, destination, filename, (start, end),
+                     threads, not quiet, not quiet)
 
 
 if __name__ == '__main__':
