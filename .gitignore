@@ -1,3 +1,4 @@
-.venv
-bin
+__pycache__/
+.venv/
+bin/
 build.bat
