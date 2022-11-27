@@ -4,29 +4,30 @@ import tempfile
 from multiprocessing import Pool
 from typing import Tuple
 from moviepy.editor import AudioFileClip, ImageSequenceClip, VideoFileClip
+from moviepy.video.fx.blackwhite import blackwhite
 from numpy import ndarray
 from PIL import Image, ImageDraw, ImageFont
 from pytube import YouTube
 from tqdm import tqdm
-from moviepy.video.fx.blackwhite import blackwhite
 
 
 class ASCIIClip:
     defaultfont = os.path.join(os.path.dirname(__file__), "moby.ttf")
-    # (".", "`", ":", ";", "+", "*", "u", "o", "@")
-    # (".", ";", "*", "u", "o")
 
     def __init__(self, chunk: Tuple[int, int], chars: Tuple, gsv: list[int, int, int], compression: int, forceaspectratio: bool,
-                 sourcequality: str, preset: str, fontsize: int, fontcolor: Tuple[int, int, int], font: str = defaultfont) -> None:
+                 quality: str, preset: str, fontsize: int, fontcolor: Tuple[int, int, int], font: str = defaultfont) -> None:
         if compression not in range(0, 9):
             raise ValueError(
-                "ERR: Compression level must be greater than 0 (no compression) and less than 9 (max compression)")
-        if preset not in [None, "720p", "1080p"]:
+                f"Error: Compression level must be greater than 0 (no compression) and less than 9 (max compression).")
+        if preset not in [None, '720', '1080']:
             raise ValueError(
-                "ERR: Preset can only be set to '720p' or '1080p'")
+                f"Error: Preset can only be set to 720 or 1080.")
+        if quality not in ['360', '480', '720', '1080']:
+            raise ValueError(
+                f"Error: Source quality can only be set to 360, 480, 720 or 1080.")
         if len(chars) not in [2, 3, 5, 9]:
             raise ValueError(
-                "ERR: Char tuple must be set to 2, 3, 5 or 9 ellements")
+                f"Error: Char tuple must be set to 2, 3, 5 or 9 ellements.")
 
         self.chars = chars
         self.chunk = chunk
@@ -35,7 +36,7 @@ class ASCIIClip:
         self.fontcolor = fontcolor
         self.compression = compression
         self.forceaspectratio = forceaspectratio
-        self.sourcequality = sourcequality
+        self.quality = quality
         self.gsv = gsv
         self.preset = preset
 
@@ -44,15 +45,20 @@ class ASCIIClip:
         return int(self.chunk[0]*self.chunk[1]*255*3/len(self.chars))
 
     @staticmethod
-    def _cut(source: VideoFileClip | AudioFileClip, segment: Tuple[int, int]) -> VideoFileClip:
+    def _cut(clip: VideoFileClip | AudioFileClip, segment: Tuple[int, int]) -> VideoFileClip:
         if segment != (None, None):
             if segment[0] is None:
                 segment[0] = 0
             if segment[1] is None:
-                segment[1] = source.duration
-            return source.subclip(*segment)
+                segment[1] = clip.duration
+
+            if segment[0] > clip.duration or segment[1] > clip.duration:
+                raise ValueError(
+                    f"Error: Segment values should be smaller than the video duration.")
+
+            return clip.subclip(*segment)
         else:
-            return source
+            return clip
 
     @staticmethod
     def _cleanup(temp: str) -> None:
@@ -106,32 +112,32 @@ class ASCIIClip:
             self.font = self.defaultfont
             ar = self._calculate_aspect_ratio(width, height)
             if ar == (16, 9):
-                if self.preset == "720p":
+                if self.preset == 720:
                     self.chunk = (2, 2)
                     self.fontsize = 4
-                if self.preset == "1080p":
+                if self.preset == 1080:
                     self.chunk = (2, 2)
                     self.fontsize = 6
             if ar == (4, 3):
-                if self.preset == "720p":
+                if self.preset == 720:
                     self.chunk = (3, 3)
                     self.fontsize = 6
-                if self.preset == "1080p":
+                if self.preset == 1080:
                     self.chunk = (3, 3)
                     self.fontsize = 9
 
-    def _video_to_sequence(self, source: VideoFileClip, temp: str, threads: int, progress: bool) -> None:
+    def _video_to_sequence(self, video: VideoFileClip, temp: str, threads: int, progress: bool) -> None:
         def update(*a):
             if progress:
                 bar.update()
 
         if progress:
-            bar = tqdm(total=int(source.fps*source.duration))
+            bar = tqdm(total=int(video.fps*video.duration))
 
         frame = 1
         pool = Pool(processes=threads)
-        for data in source.iter_frames(logger=None):
-            pool.apply_async(self._frame_to_image, args=(data, source.w, source.h, source.fps, source.duration, temp, frame, self.chunk,
+        for data in video.iter_frames(logger=None):
+            pool.apply_async(self._frame_to_image, args=(data, video.w, video.h, video.fps, video.duration, temp, frame, self.chunk,
                              self.chars, self.compression, self.font, self.fontsize, self.fontcolor, self._maximumluminosity), callback=update)
             frame += 1
 
@@ -154,54 +160,66 @@ class ASCIIClip:
         output.write_videofile(f"{destination}/{name}.mp4", logger=None)
         return output
 
-    def generate_video(self, link: str, destination: str, filename: str, segment: Tuple[int, int], threads: int, verbose: bool, progress: bool) -> None:
+    def generate_video(self, source: str, destination: str, filename: str, segment: Tuple[int, int], threads: int, verbose: bool, progress: bool) -> ImageSequenceClip:
         if os.path.exists(destination):
             if not os.access(destination, os.W_OK) or destination == "/":
                 raise OSError(
-                    f"ERR: Destination folder is not writable")
+                    f"Error: Destination folder is not writable.")
         else:
             os.makedirs(destination, exist_ok=True)
 
         temp = tempfile.mkdtemp()
         self._print(
-            f"ASCIIClip - Temporary folder for video and frames: {temp}", verbose)
+            f"ASCIIClip: Temporary folder for video and frames: {temp}.", verbose)
 
-        try:
-            self._print(f"ASCIIClip - Downloading video from YouTube", verbose)
-            source = blackwhite(self._cut(VideoFileClip(YouTube(link).streams.filter(
-                res="360p" if self.preset is not None else self.sourcequality
+        if "youtube.com" in source:
+            self._print(
+                f"ASCIIClip: Processing video from YouTube [{source}].", verbose)
+            video = blackwhite(self._cut(VideoFileClip(YouTube(source).streams.filter(
+                res="360p" if self.preset is not None else f"{self.quality}p"
             ).first().download(output_path=temp, filename="yt.mp4")), segment), RGB=self.gsv)
 
-            self._print(f"ASCIIClip - Downloading audio from YouTube", verbose)
-            audio = self._cut(AudioFileClip(YouTube(link).streams.filter(
+            self._print(
+                f"ASCIIClip: Processing audio from YouTube [{source}].", verbose)
+            audio = self._cut(AudioFileClip(YouTube(source).streams.filter(
                 only_audio=True).first().download(output_path=temp, filename="yt.mp3")), segment)
-        except:
-            raise RuntimeError(
-                f"ERR: An unexpected error occurred while processing the video")
+        else:
+            if not os.path.exists(source) or not os.access(source, os.R_OK):
+                raise OSError(
+                    f"Error: Source file is not readable.")
 
-        if source.w % self.chunk[0] != 0:
+            self._print(
+                f"ASCIIClip: Processing video [{source}].", verbose)
+            video = blackwhite(
+                self._cut(VideoFileClip(source), segment).resize(height=int(self.quality)), RGB=self.gsv)
+
+            self._print(
+                f"ASCIIClip: Processing audio [{source}].", verbose)
+            audio = self._cut(AudioFileClip(source), segment)
+
+        if video.w % self.chunk[0] != 0:
             raise ValueError(
-                f"ERR: Source width must be divisible by chunk width ({source.w})px")
-        if source.h % self.chunk[1] != 0:
+                f"Error: Source width must be divisible by chunk width ({video.w})px).")
+        if video.h % self.chunk[1] != 0:
             raise ValueError(
-                f"ERR: Source height must be divisible by chunk height ({source.h}px)")
+                f"Error: Source height must be divisible by chunk height ({video.h}px).")
 
         try:
             self._print(
-                f"ASCIIClip - Generating an ASCII copy of each frame", verbose)
-            self._apply_preset(source.w, source.h)
-            self._video_to_sequence(source, temp, threads, progress)
+                f"ASCIIClip: Generating an ASCII copy of each frame.", verbose)
+            self._apply_preset(video.w, video.h)
+            self._video_to_sequence(video, temp, threads, progress)
 
             self._print(
-                f"ASCIIClip - Saving video to the destination folder: {destination}", verbose)
+                f"ASCIIClip: Saving video to the destination folder: {destination}.", verbose)
             output = self._sequence_to_video(
-                temp, destination, filename, audio, source.fps)
+                temp, destination, filename, audio, video.fps)
         finally:
-            source.close()
+            video.close()
             audio.close()
             self._cleanup(temp)
 
         self._print(
-            f"ASCIIClip - Video [{filename}.mp4] has been successfully created, temporary files have been deleted", verbose)
+            f"ASCIIClip: Video [{filename}.mp4] has been successfully created, temporary files have been deleted.", verbose)
 
         return output
