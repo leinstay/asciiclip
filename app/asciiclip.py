@@ -9,37 +9,26 @@ from multiprocessing import Pool
 from PIL import Image, ImageDraw, ImageFont
 from moviepy.editor import ImageSequenceClip, VideoFileClip, AudioFileClip
 from moviepy.video.fx.blackwhite import blackwhite
-from multiprocessing import cpu_count
-
-# TODO
-# Add posibility to use internal videos as source
-# Remove defauls to click
 
 
 class ASCIIClip:
-    _defaultfont = "moby.ttf"
+    defaultfont = os.path.join(os.path.dirname(__file__), "moby.ttf")
 
-    def __init__(self, chunk: Tuple[int, int] = (2, 2), chars: Tuple | str = "5s", font: str = _defaultfont, fontsize: int = 6, fontcolor: Tuple[int, int, int] = (255, 255, 255), gsv: list[int, int, int] = [0.299, 0.587, 0.114], compression: int = 0, forceaspectratio: bool = True, sourcequality: str = "360p", preset: str = "1080p") -> None:
+    def __init__(self, chunk: Tuple[int, int], chars: Tuple, gsv: list[int, int, int], compression: int, forceaspectratio: bool, sourcequality: str, preset: str, fontsize: int, fontcolor: Tuple[int, int, int], font: str = defaultfont) -> None:
+        # (".", "`", ":", ";", "+", "*", "u", "o", "@")
+        # (".", ";", "*", "u", "o")
+
         if compression not in range(0, 9):
             raise ValueError(
                 "ERR: Compression level must be greater than 0 (no compression) and less than 9 (max compression)")
         if preset not in [None, "720p", "1080p"]:
             raise ValueError(
                 "ERR: Preset can only be set to '720p' or '1080p'")
-        if type(chars) is str and chars not in ["5s", "9s"]:
-            raise ValueError(
-                "ERR: Char list can only be set to '5s', '9s' or custom tuple")
         if len(chars) not in [2, 3, 5, 9]:
             raise ValueError(
                 "ERR: Char tuple must be set to 2, 3, 5 or 9 ellements")
 
-        if chars == "5s":
-            self.chars = (".", ";", "*", "u", "o")
-        elif chars == "9s":
-            self.chars = (".", "`", ":", ";", "+", "*", "u", "o", "@")
-        else:
-            self.chars = chars
-
+        self.chars = chars
         self.chunk = chunk
         self.font = font
         self.fontsize = fontsize
@@ -88,8 +77,7 @@ class ASCIIClip:
 
     @staticmethod
     def _frame_to_image(data: ndarray, width: int, height: int, fps: int, duration: int, destination: str, frame: int, chunk: Tuple[int, int], chars: Tuple, compression: int, font: str, fontsize: str, fontcolor: str, maximumluminosity: int) -> None:
-        im = Image.new(mode="RGB", size=(
-            int((width*fontsize)/chunk[0]), int((height*fontsize)/chunk[1])))
+        im = Image.new(mode="RGB", size=(int((width*fontsize)/chunk[0]), int((height*fontsize)/chunk[1])))
         di = ImageDraw.Draw(im)
 
         for y in range(0, int(height/chunk[1])):
@@ -105,14 +93,13 @@ class ASCIIClip:
             di.text((0, y*fontsize), line, fill=fontcolor,
                     font=ImageFont.truetype(font, fontsize))
 
-        nm = destination + "/frame_" + \
-            str(frame).zfill(len(str(fps*duration))) + ".png"
+        nm = destination + "/frame_" + str(frame).zfill(len(str(fps*duration))) + ".png"
         im.save(nm, "PNG", optimize=False, compress_level=compression)
         im.close()
 
     def _apply_preset(self, width, height) -> None:
         if self.preset is not None:
-            self.font = self._defaultfont
+            self.font = self.defaultfont
             ar = self._calculate_aspect_ratio(width, height)
             if ar == (16, 9):
                 if self.preset == "720p":
@@ -129,7 +116,7 @@ class ASCIIClip:
                     self.chunk = (3, 3)
                     self.fontsize = 9
 
-    def _video_to_sequence(self, source: VideoFileClip, temp: str, threads: int, progress: bool = True) -> None:
+    def _video_to_sequence(self, source: VideoFileClip, temp: str, threads: int, progress: bool) -> None:
         def update(*a):
             if progress:
                 bar.update()
@@ -164,7 +151,7 @@ class ASCIIClip:
         output.write_videofile(f"{destination}/{name}.mp4", logger=None)
         return output
 
-    def generate_video(self, link: str, destination: str, name: str = "ascii", segment: Tuple[int, int] = (None, None), threads: int = cpu_count(), verbose: bool = True, progress: bool = True) -> None:
+    def generate_video(self, link: str, destination: str, filename: str, segment: Tuple[int, int], threads: int, verbose: bool, progress: bool) -> None:
         if os.path.exists(destination):
             if not os.access(destination, os.W_OK) or destination == "/":
                 raise OSError(
@@ -196,24 +183,20 @@ class ASCIIClip:
                 f"ERR: Source height must be divisible by chunk height ({source.h}px)")
 
         try:
-            self._print(
-                f"ASCIIClip - Generating an ASCII copy of each frame", verbose)
+            self._print(f"ASCIIClip - Generating an ASCII copy of each frame", verbose)
             self._apply_preset(source.w, source.h)
             self._video_to_sequence(source, temp, threads, progress)
 
             self._print(
                 f"ASCIIClip - Saving video to the destination folder: {destination}", verbose)
             output = self._sequence_to_video(
-                temp, destination, name, audio, source.fps)
+                temp, destination, filename, audio, source.fps)
         finally:
             source.close()
             audio.close()
             self._cleanup(temp)
 
         self._print(
-            f"ASCIIClip - Video [{name}.mp4] has been successfully created, temporary files have been deleted", verbose)
+            f"ASCIIClip - Video [{filename}.mp4] has been successfully created, temporary files have been deleted", verbose)
 
         return output
-
-    def generate_image(self, link: str, destination: str):
-        print('...')
