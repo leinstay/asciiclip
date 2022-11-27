@@ -5,8 +5,7 @@
 
 CLI tool that applies an ASCII filter to video or image. 
 
-[![demo](https://user-images.githubusercontent.com/8215580/204164792-391ddc9b-f085-412b-9ae4-16f2df3be725.png)](https://www.youtube.com/watch?v=lY-HOrYV_bk)
-![12313](https://user-images.githubusercontent.com/8215580/204165144-848c2fc8-9ea3-4fbb-be8d-142bb3210d48.png)
+[![demo](https://user-images.githubusercontent.com/8215580/204165144-848c2fc8-9ea3-4fbb-be8d-142bb3210d48.png)](https://www.youtube.com/watch?v=lY-HOrYV_bk)
 
 ## Quick intro
 
