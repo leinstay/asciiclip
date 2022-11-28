@@ -2,10 +2,10 @@ from setuptools import setup
 
 setup(
     name='asciiclip',
-    version='1.0.11',
+    version='1.0.0',
     author='leinstay',
     author_email='leinstay@gmail.com',
-    description='',
+    description='CLI tool that applies an ASCII filter to video or image.',
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
     url='https://github.com/leinstay/asciiclip',
@@ -20,11 +20,16 @@ setup(
     ],
     python_requires='>=3.7',
     classifiers=[
-        "Programming Language :: Python :: 3.11",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
+        "Environment :: Console",
+        "Topic :: Multimedia :: Video :: Conversion",
+        "Topic :: Scientific/Engineering :: Image Processing",
+        "Topic :: Text Processing",
     ],
     entry_points='''
         [console_scripts]
-        asciiclip=main:cli
+        asciiclip=main:generate
     '''
 )
