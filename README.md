@@ -5,7 +5,7 @@
 
 CLI tool that applies an ASCII filter to video or image. 
 
-[![demo](https://user-images.githubusercontent.com/8215580/204165144-848c2fc8-9ea3-4fbb-be8d-142bb3210d48.png)](https://www.youtube.com/watch?v=lY-HOrYV_bk)
+[![demo1](https://user-images.githubusercontent.com/8215580/204165144-848c2fc8-9ea3-4fbb-be8d-142bb3210d48.png)](https://www.youtube.com/watch?v=lY-HOrYV_bk)
 
 ## Examples
 
@@ -40,6 +40,8 @@ Create an ASCII clip using custom settings
 ```sh
 asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/ -a \.\:\;\-\+\*\u\o\@ -c 6 6 -fs 12 -q 720
 ```
+
+[![demo2]([https://user-images.githubusercontent.com/8215580/204165144-848c2fc8-9ea3-4fbb-be8d-142bb3210d48.png](https://user-images.githubusercontent.com/8215580/204167657-e70f9c54-1ce7-40b1-bc91-b7c0acdb9a3b.png))](https://www.youtube.com/watch?v=tAYcG1q8DR4&t=30s)
 
 ## Installation
 
