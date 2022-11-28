@@ -39,7 +39,7 @@ asciiclip -o /from/image.png -d /to/ -a ".:;-+*uo@"
 Create an ASCII clip using custom settings:
 
 ```sh
-asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/ -a ".:;-+*uo@" -q 720 -h 8 8 -fs 8
+asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/ -a ".:;-+*uo@" -q 1080 -h 6 6 -fs 6
 ```
 
 ## Installation
