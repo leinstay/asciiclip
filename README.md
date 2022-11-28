@@ -1,8 +1,5 @@
 # ASCII Clip
 
-[![PyPI](https://user-images.githubusercontent.com/8215580/204163662-d1475963-b56a-44c4-9d50-cf55bf8d4a17.svg)](https://pypi.org/project/asciiclip/)
-[![license](https://user-images.githubusercontent.com/8215580/204163670-af0c2bfa-0ea0-44ac-bc4e-97971dcf12f0.svg)](https://github.com/leinstay/asciiclip/blob/master/LICENSE)
-
 CLI tool that applies an ASCII filter to video or image. 
 
 [![demo1](https://user-images.githubusercontent.com/8215580/204165144-848c2fc8-9ea3-4fbb-be8d-142bb3210d48.png)](https://www.youtube.com/watch?v=lY-HOrYV_bk)
