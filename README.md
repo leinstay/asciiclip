@@ -21,6 +21,7 @@ Create an ASCII clip from YouTube video or local video
 asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/
 asciiclip -o /from/clip.mp4 -d /to/ -s 10 -e 30
 ```
+[![demo2](https://user-images.githubusercontent.com/8215580/204167745-758c4154-9aa3-4194-a2e7-22923e6f86b4.png)](https://www.youtube.com/watch?v=tAYcG1q8DR4&t=30s)
 
 Create an ASCII image of a particular second from YouTube video or local video
 
@@ -40,8 +41,6 @@ Create an ASCII clip using custom settings
 ```sh
 asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/ -a \.\:\;\-\+\*\u\o\@ -c 6 6 -fs 12 -q 720
 ```
-
-[![demo2]([https://user-images.githubusercontent.com/8215580/204165144-848c2fc8-9ea3-4fbb-be8d-142bb3210d48.png](https://user-images.githubusercontent.com/8215580/204167657-e70f9c54-1ce7-40b1-bc91-b7c0acdb9a3b.png))](https://www.youtube.com/watch?v=tAYcG1q8DR4&t=30s)
 
 ## Installation
 
