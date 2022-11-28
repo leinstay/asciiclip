@@ -15,7 +15,7 @@ Install latest version using pip:
 python3 -m pip install asciiclip
 ```
 
-Create an ASCII clip from YouTube video or local video
+Create an ASCII clip from YouTube video or local video:
 
 ```sh
 asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/
@@ -23,20 +23,20 @@ asciiclip -o /from/clip.mp4 -d /to/ -s 10 -e 30
 ```
 [![demo2](https://user-images.githubusercontent.com/8215580/204167745-758c4154-9aa3-4194-a2e7-22923e6f86b4.png)](https://www.youtube.com/watch?v=tAYcG1q8DR4&t=31s)
 
-Create an ASCII image of a particular second from YouTube video or local video
+Create an ASCII image of a particular second from YouTube video or local video:
 
 ```sh
 asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/ -r 120
 asciiclip -o /from/clip.mp4 -d /to/ -r 5
 ```
 
-Create an ASCII image from local image using custom ASCII character list
+Create an ASCII image from local image using custom ASCII character list:
 
 ```sh
 asciiclip -o /from/image.png -d /to/ -a ".:;-+*uo@"
 ```
 
-Create an ASCII clip using custom settings
+Create an ASCII clip using custom settings:
 
 ```sh
 asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/ -a ".:;-+*uo@" -q 720 -h 8 8 -fs 8
