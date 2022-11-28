@@ -33,13 +33,13 @@ asciiclip -o /from/clip.mp4 -d /to/ -r 5
 Create an ASCII image from local image using custom ASCII character list
 
 ```sh
-asciiclip -o /from/image.png -d /to/ -a \.\:\;\-\+\*\u\o\@
+asciiclip -o /from/image.png -d /to/ -a ".:;-+*uo@"
 ```
 
 Create an ASCII clip using custom settings
 
 ```sh
-asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/ -a \.\:\;\-\+\*\u\o\@ -c 6 6 -fs 12 -q 720
+asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/ -a ".:;-+*uo@" -h 6 6 -fs 12 -q 720
 ```
 
 ## Installation
@@ -73,9 +73,9 @@ Available options:
 -   `-r, --frame INTEGER`             - Turns the frame at a specified second of video into an image (-s/-e will be ignored)
 -   `-t, --threads INTEGER RANGE`     - Number of threads used for video processing [default: 8; 1<=x<=32]
 -   `-a, --chars TEXT`                - List of ASCII characters arranged from dark to light  [default: .;*uo]
--   `-p, --preset [720|1080]`         - A set of settings that will produce a 720p or 1080p output file (-c/-ft/-fs/-q will be ignored)
+-   `-p, --preset [720|1080]`         - A set of settings that will produce a 720p or 1080p output file (-h/-ft/-fs/-q will be ignored)
 -   `-q, --sourcequality [360|480|720|1080]` - Height in pixels to which the video or image will be scaled down (the final result will be about [fontsize/chunk] times this value) [default: 360]
--   `-c, --chunk INTEGER RANGE...`    - Size of the rectangular area that will be consolidated to a single ASCII symbol [default: 2, 2; 0<=x<=128]
+-   `-h, --chunk INTEGER RANGE...`    - Size of the rectangular area that will be consolidated to a single ASCII symbol [default: 2, 2; 0<=x<=128]
 -   `-g, --gsv FLOAT RANGE...`        - RGB weights used when desaturating an image or video  [default: 0.299, 0.587, 0.114; 0<=x<=1]
 -   `-c, --compression INTEGER RANGE` - PNG compression level  [default: 0; 0<=x<=9]
 -   `-ft, --font FILE`                - Path to custom font  [default: moby.ttf]
