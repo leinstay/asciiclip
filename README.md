@@ -42,7 +42,7 @@ asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/ -a ".:;-+*uo@" -
 
 ### Python package from PyPI
 
-[pypi]: https://pypi.python.org/pypi/asciinema
+[pypi]: https://pypi.python.org/pypi/asciiclip
 
 asciiclip is available on [PyPI] and can be installed with pip (Python 3
 with setuptools required):
