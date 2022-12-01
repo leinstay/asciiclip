@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='asciiclip',
-    version='1.0.0',
+    version='1.0.1',
     author='leinstay',
     author_email='leinstay@gmail.com',
     description='CLI tool that applies an ASCII filter to video or image.',
