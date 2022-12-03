@@ -4,13 +4,22 @@ CLI tool that applies an ASCII filter to video or image.
 
 [![demo1](https://user-images.githubusercontent.com/8215580/204165144-848c2fc8-9ea3-4fbb-be8d-142bb3210d48.png)](https://www.youtube.com/watch?v=lY-HOrYV_bk)
 
-## Examples
+## Installation
 
-Install latest version using pip:
+### Python package from PyPI
+
+[pypi]: https://pypi.python.org/pypi/asciiclip
+
+asciiclip is available on [PyPI] and can be installed with pip (Python 3
+with setuptools required):
 
 ```sh
 python3 -m pip install asciiclip
 ```
+
+Installing from [PyPI] is the recommended way of installation, which gives you the latest released version.
+
+## Examples
 
 Create an ASCII clip from YouTube video or local video:
 
@@ -37,21 +46,6 @@ Create an ASCII clip using custom settings:
 ```sh
 asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/ -a ".:;-+*uo@" -q 1080 -h 6 6 -fs 6
 ```
-
-## Installation
-
-### Python package from PyPI
-
-[pypi]: https://pypi.python.org/pypi/asciiclip
-
-asciiclip is available on [PyPI] and can be installed with pip (Python 3
-with setuptools required):
-
-```sh
-python3 -m pip install asciiclip
-```
-
-Installing from [PyPI] is the recommended way of installation, which gives you the latest released version.
 
 ## Usage
 
