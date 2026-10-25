@@ -1,77 +1,84 @@
 # ASCII Clip
 
-CLI tool that applies an ASCII filter to video or image. 
+Command-line tool that applies an ASCII filter to a video or an image. It takes a local file or a YouTube link, scales it down, maps blocks of pixels to characters by brightness and renders the result back into a video with the original audio, or into a PNG.
 
-[![demo1](https://user-images.githubusercontent.com/8215580/204165144-848c2fc8-9ea3-4fbb-be8d-142bb3210d48.png)](https://www.youtube.com/watch?v=lY-HOrYV_bk)
+[![Demo on YouTube](https://user-images.githubusercontent.com/8215580/204165144-848c2fc8-9ea3-4fbb-be8d-142bb3210d48.png)](https://www.youtube.com/watch?v=lY-HOrYV_bk)
+
+## Requirements
+
+Python 3.7 or newer. The dependencies (`click`, `moviepy`, `pytube`, `Pillow`) are installed by pip.
 
 ## Installation
-
-### Python package from PyPI
-
-[pypi]: https://pypi.python.org/pypi/asciiclip
-
-asciiclip is available on [PyPI] and can be installed with pip (Python 3
-with setuptools required):
 
 ```sh
 python3 -m pip install asciiclip
 ```
 
-Installing from [PyPI] is the recommended way of installation, which gives you the latest released version.
+Or from source:
 
-## Examples
+```sh
+git clone https://github.com/leinstay/asciiclip.git
+cd asciiclip
+python3 -m pip install .
+```
 
-Create an ASCII clip from YouTube video or local video:
+## Usage
+
+Make an ASCII clip from a YouTube video or a local video, optionally trimmed to seconds 10 to 30:
 
 ```sh
 asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/
 asciiclip -o /from/clip.mp4 -d /to/ -s 10 -e 30
 ```
 
-Create an ASCII image of a particular second from YouTube video or local video:
+Render a single frame at a given second as an image:
 
 ```sh
 asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/ -r 120
 asciiclip -o /from/clip.mp4 -d /to/ -r 5
 ```
 
-Create an ASCII image from local image using custom ASCII character list:
+Convert an image with a custom character ramp, dark to light:
 
 ```sh
 asciiclip -o /from/image.png -d /to/ -a ".:;-+*uo@"
 ```
 
-Create an ASCII clip using custom settings:
+Make a clip with custom quality, chunk and font settings:
 
 ```sh
 asciiclip -o https://www.youtube.com/watch?v=xxxxxxxx -d /dest/ -a ".:;-+*uo@" -q 1080 -h 6 6 -fs 6
 ```
 
-## Usage
+## Options
 
-When you run `asciiclip` with no arguments help message is displayed, listing all options.
+Running `asciiclip` without arguments prints this list.
 
-Usage: asciiclip [OPTIONS]
+| Option | Default | Meaning |
+|---|---|---|
+| `-o, --source PATH` | required | YouTube link or path to an image or video |
+| `-d, --destination DIRECTORY` | required | Output folder |
+| `-f, --filename TEXT` | `ascii` | Output file name |
+| `-s, --start INTEGER` | | Trim, start second |
+| `-e, --end INTEGER` | | Trim, end second |
+| `-r, --frame INTEGER` | | Render only the frame at this second as an image (`-s` and `-e` are ignored) |
+| `-t, --threads INTEGER` | `8` | Threads for video processing, 1 to 32 |
+| `-a, --chars TEXT` | `.;*uo` | ASCII characters from dark to light |
+| `-p, --preset [720\|1080]` | | Settings that produce a 720p or 1080p file (`-h`, `-ft`, `-fs` and `-q` are ignored) |
+| `-q, --sourcequality [360\|480\|720\|1080]` | `360` | Height the source is scaled down to. The result is about `fontsize/chunk` times this |
+| `-h, --chunk INTEGER INTEGER` | `2 2` | Size of the pixel block that becomes one character, 0 to 128 |
+| `-g, --gsv FLOAT FLOAT FLOAT` | `0.299 0.587 0.114` | RGB weights used when desaturating |
+| `-c, --compression INTEGER` | `0` | PNG compression level, 0 to 9 |
+| `-ft, --font FILE` | `moby.ttf` | Path to a custom font |
+| `-fs, --fontsize INTEGER` | `6` | Font size, 0 to 128 |
+| `-fc, --fontcolor INTEGER INTEGER INTEGER` | `255 255 255` | Font color |
+| `--keepaspectratio` | off | Keep the original aspect ratio. Otherwise videos narrower than 16:9 get side bars |
+| `--mute` | off | Drop the audio track |
+| `--quiet` | off | Suppress console messages |
+| `--help` | | Show the help and exit |
 
-Available options:
+## License and credits
 
--   `-o, --source PATH`               - Link to YouTube video or path to image or video  *[required]*
--   `-d, --destination DIRECTORY`     - Output folder  *[required]*
--   `-f, --filename TEXT`             - Output file name  [default: ascii]
--   `-s, --start INTEGER`             - Used to trim video, sets the beginning point in seconds
--   `-e, --end INTEGER`               - Used to trim video, sets the ending point in seconds
--   `-r, --frame INTEGER`             - Turns the frame at a specified second of video into an image (-s/-e will be ignored)
--   `-t, --threads INTEGER RANGE`     - Number of threads used for video processing [default: 8; 1<=x<=32]
--   `-a, --chars TEXT`                - List of ASCII characters arranged from dark to light  [default: .;*uo]
--   `-p, --preset [720|1080]`         - A set of settings that will produce a 720p or 1080p output file (-h/-ft/-fs/-q will be ignored)
--   `-q, --sourcequality [360|480|720|1080]` - Height in pixels to which the video or image will be scaled down (the final result will be about [fontsize/chunk] times this value) [default: 360]
--   `-h, --chunk INTEGER RANGE...`    - Size of the rectangular area that will be consolidated to a single ASCII symbol [default: 2, 2; 0<=x<=128]
--   `-g, --gsv FLOAT RANGE...`        - RGB weights used when desaturating an image or video  [default: 0.299, 0.587, 0.114; 0<=x<=1]
--   `-c, --compression INTEGER RANGE` - PNG compression level  [default: 0; 0<=x<=9]
--   `-ft, --font FILE`                - Path to custom font  [default: moby.ttf]
--   `-fs, --fontsize INTEGER RANGE`   - Font size  [default: 6; 0<=x<=128]
--   `-fc, --fontcolor INTEGER RANGE`  - Font color  [default: 255, 255, 255; 0<=x<=255]
--   `--keepaspectratio`               - Preserves original aspect ratio, otherwise if the video is thinner than 16:9 bars will be added to the sides
--   `--mute`                          - Removes the audio track from the video
--   `--quiet`                         - Suppress all console messages
--   `--help`                          - Show this message and exit.
+MIT License, see [LICENSE](LICENSE).
+
+* Moby font bundled in `app/moby.ttf`
